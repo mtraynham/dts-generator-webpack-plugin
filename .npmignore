@@ -1,6 +1,9 @@
-*[Ss]pec.[ts|js]
+*.iml
+*.spec.js
+*.spec.ts
 .gitignore
 .travis.yml
+jasmine.json
 tsconfig.json
 tslint.json
 yarn.lock
