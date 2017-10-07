@@ -1,0 +1,14 @@
+{
+    "compileOnSave": false,
+    "compilerOptions": {
+        "lib": [
+            "es2015",
+            "es2016",
+            "dom"
+        ],
+        "target": "es2015",
+        "module": "es2015",
+        "moduleResolution": "node",
+        "allowSyntheticDefaultImports": true
+    }
+}
