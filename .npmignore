@@ -1,6 +1,7 @@
 *.iml
 *.spec.js
 *.spec.ts
+fixtures
 .gitignore
 .travis.yml
 jasmine.json

@@ -5,11 +5,12 @@
     "main": "index.js",
     "typings": "index.ts",
     "scripts": {
+        "clean": "rimraf -g './{,!(node_modules)/**/}*.js' && rimraf './.tmp'",
         "lint": "tslint -c ./tslint.json --project .",
-        "prebuild": "npm run lint",
+        "prebuild": "npm run clean && npm run lint",
         "build": "tsc --pretty",
         "pretest": "npm run lint",
-        "test": "jasmine --config=jasmine.json",
+        "test": "ts-node node_modules/.bin/jasmine --config=jasmine.json",
         "prepublishOnly": "npm run build"
     },
     "repository": {
@@ -46,6 +47,8 @@
         "@types/webpack": "^3",
         "awesome-typescript-loader": "^3",
         "jasmine": "^2",
+        "rimraf": "^2",
+        "ts-node": "^3",
         "tslint": "^5",
         "tslint-microsoft-contrib": "^5",
         "typescript": "^2",

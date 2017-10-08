@@ -25,34 +25,29 @@ interface ICompilation {
     assets: {[key: string]: {source(): Buffer, size(): number}};
 }
 
-class DtsGeneratorPlugin extends Plugin {
+class DtsGeneratorPlugin implements Plugin {
     private options: IDtsGeneratorPluginOptions;
 
     constructor (options: IDtsGeneratorPluginOptions) {
-        super();
         this.options = options;
     }
 
     public apply (compiler: Compiler): void {
-        // 'additional-assets' compilation plugin
-        // https://webpack.js.org/api/plugins/compilation/#additional-assets-async
-        compiler.plugin('compilation', (compilation: ICompilation) => {
-            compiler.plugin('additional-assets', (callback: CallbackFunction) => {
-                this.compile()
-                    .then((source: Buffer) =>
-                        Object.assign(compilation.assets, {
-                            [`${this.options.name}.d.ts`]: {
-                                source: (): Buffer => Buffer.from(source),
-                                // Buffer.byteLength does support Buffer type even though the
-                                // type definition does not
-                                // https://nodejs.org/api/buffer.html#buffer_class_method_buffer_bytelength_string_encoding
-                                size: (): number => Buffer.byteLength(<string> <{}> source)
-                            }
-                        }))
-                    // Callback with no Error on success
-                    .then(() => { callback(); })
-                    .catch(callback);
-            });
+        compiler.plugin('emit', (compilation: ICompilation, callback: CallbackFunction) => {
+            this.compile()
+                .then((source: Buffer) =>
+                    Object.assign(compilation.assets, {
+                        [`${this.options.name}.d.ts`]: {
+                            source: (): Buffer => Buffer.from(source),
+                            // Buffer.byteLength does support Buffer type even though the
+                            // type definition does not
+                            // https://nodejs.org/api/buffer.html#buffer_class_method_buffer_bytelength_string_encoding
+                            size: (): number => Buffer.byteLength(<string> <{}> source)
+                        }
+                    }))
+                // Callback with no Error on success
+                .then(() => { callback(); })
+                .catch(callback);
         });
     }
 
