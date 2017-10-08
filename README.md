@@ -1,3 +1,6 @@
+[![npm version](https://badge.fury.io/js/dts-generator-webpack-plugin.svg)](https://badge.fury.io/js/dts-generator-webpack-plugin)
+[![Build Status](https://travis-ci.org/mtraynham/dts-generator-webpack-plugin.svg?branch=master)](https://travis-ci.org/mtraynham/dts-generator-webpack-plugin)
+
 # dts-generator-webpack-plugin
 A plugin that executes [dts-generator](https://github.com/SitePen/dts-generator) and appends the results to 
 the webpack compilation as an additional asset.
