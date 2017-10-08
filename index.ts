@@ -57,6 +57,7 @@ class DtsGeneratorPlugin implements Plugin {
      * @returns {Bluebird<Buffer>}
      */
     private compile (): Bluebird<Buffer> {
+        // TODO: Create a resizable Buffer instead of writing to a tmp directory?
         return tmpNameAsync()
             .then((fileName: string) =>
                 dtsGenerator(Object.assign({}, this.options, {out: fileName}))
