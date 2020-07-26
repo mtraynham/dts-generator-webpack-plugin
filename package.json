@@ -1,6 +1,6 @@
 {
     "name": "dts-generator-webpack-plugin",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "description": "A webpack plugin for running dts-generator",
     "main": "index.js",
     "typings": "index.ts",
@@ -31,27 +31,27 @@
     },
     "homepage": "https://github.com/mtraynham/dts-generator-webpack-plugin#README.MD",
     "peerDependencies": {
-        "webpack": "^3"
+        "webpack": "^4"
     },
     "dependencies": {
         "bluebird": "^3",
-        "dts-generator": "^2",
         "tmp": "^0"
     },
     "devDependencies": {
         "@types/bluebird": "^3",
         "@types/dts-generator": "^2",
-        "@types/jasmine": "^2",
-        "@types/node": "^8",
+        "@types/jasmine": "^3",
+        "@types/node": "^14",
         "@types/tmp": "^0",
-        "@types/webpack": "^3",
-        "awesome-typescript-loader": "^3",
-        "jasmine": "^2",
-        "rimraf": "^2",
-        "ts-node": "^3",
-        "tslint": "^5",
-        "tslint-microsoft-contrib": "^5",
-        "typescript": "^2",
-        "webpack": "^3"
+        "@types/webpack": "^4",
+        "awesome-typescript-loader": "^5",
+        "dts-generator": "^3",
+        "jasmine": "^3",
+        "rimraf": "^3",
+        "ts-node": "^8",
+        "tslint": "^6",
+        "tslint-microsoft-contrib": "^6",
+        "typescript": "^3",
+        "webpack": "^4"
     }
 }

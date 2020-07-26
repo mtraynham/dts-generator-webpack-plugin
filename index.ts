@@ -1,9 +1,9 @@
 import Bluebird, {promisify} from 'bluebird';
 import dtsGenerator, {DtsGeneratorOptions} from 'dts-generator';
 import {readFile} from 'fs';
-import {CallbackFunction} from 'tapable';
+import {Tapable} from 'tapable';
 import {tmpName} from 'tmp';
-import {Compiler, Plugin} from 'webpack';
+import webpack, {Compiler, Plugin} from 'webpack';
 
 // Promisify our IO utilities
 const readFileAsync: (fileName: string) => Bluebird<Buffer> =
@@ -19,24 +19,19 @@ interface IDtsGeneratorPluginOptions extends Partial<DtsGeneratorOptions> {
     name: string;
 }
 
-// The Webpack typing doesn't have any information on plugin Compilation objects.
-// All we need to know about is the assets output.
-interface ICompilation {
-    assets: {[key: string]: {source(): Buffer, size(): number}};
-}
-
 class DtsGeneratorPlugin implements Plugin {
-    private options: IDtsGeneratorPluginOptions;
+    private readonly options: IDtsGeneratorPluginOptions;
 
     constructor (options: IDtsGeneratorPluginOptions) {
         this.options = options;
     }
 
     public apply (compiler: Compiler): void {
-        compiler.plugin('emit', (compilation: ICompilation, callback: CallbackFunction) => {
-            this.compile()
-                .then((source: Buffer) =>
-                    Object.assign(compilation.assets, {
+        compiler.hooks.emit.tapAsync(
+            'dts-generator-webpack-plugin',
+            (compilation: webpack.compilation.Compilation, callback: Tapable.CallbackFunction): void => {
+                this.compile()
+                    .then((source: Buffer): Bluebird<Buffer> => ({...compilation.assets,
                         [`${this.options.name}.d.ts`]: {
                             source: (): Buffer => Buffer.from(source),
                             // Buffer.byteLength does support Buffer type even though the
@@ -45,23 +40,23 @@ class DtsGeneratorPlugin implements Plugin {
                             size: (): number => Buffer.byteLength(<string> <{}> source)
                         }
                     }))
-                // Callback with no Error on success
-                .then(() => { callback(); })
-                .catch(callback);
-        });
+                    // Callback with no Error on success
+                    .then((): void => { callback(); })
+                    .catch(callback);
+            }
+        );
     }
 
     /**
      * Run dts-generator, writing the file to a tmp directory and then
      * providing the Buffer back to Webpack
-     * @returns {Bluebird<Buffer>}
      */
     private compile (): Bluebird<Buffer> {
         // TODO: Create a resizable Buffer instead of writing to a tmp directory?
         return tmpNameAsync()
-            .then((fileName: string) =>
-                dtsGenerator(Object.assign({}, this.options, {out: fileName}))
-                    .then(() => readFileAsync(fileName)));
+            .then((fileName: string): Bluebird<Buffer> =>
+                dtsGenerator({...this.options, out: fileName})
+                    .then((): Bluebird<Buffer> => readFileAsync(fileName)));
     }
 }
 
